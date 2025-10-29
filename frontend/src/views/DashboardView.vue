@@ -1,130 +1,120 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-400 p-6 flex flex-col items-center text-white">
-    <!-- Header -->
-    <div class="w-full max-w-5xl text-center mb-8">
-      <h1 class="text-4xl font-extrabold mb-2 drop-shadow-md">💸 Expense Dashboard</h1>
-      <p class="text-indigo-100/90">Add and view your daily, monthly, or all-time expenses easily</p>
-    </div>
+  <div class="relative min-h-screen bg-[#141517] text-gray-100 font-sans overflow-hidden">
+    <!-- 🌌 Custom Canvas Particle Background -->
+    <ParticleBackground />
 
-    <!-- Add Expense Section (TOP) -->
-    <div
-      class="backdrop-blur-md bg-white/20 border border-white/40 shadow-2xl rounded-2xl p-8 w-full max-w-4xl mb-10 transition hover:shadow-indigo-400/50"
-    >
-      <h2 class="text-2xl font-semibold mb-6 text-center text-white drop-shadow-md">Add New Expense</h2>
+    <!-- Gradient Overlay -->
+    <div class="absolute inset-0 -z-20 bg-gradient-to-b from-[#1c1d20] via-[#141517] to-[#0f1011] opacity-90"></div>
 
-      <form @submit.prevent="addExpense" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <input
-          v-model="title"
-          placeholder="Title"
-          class="px-4 py-3 rounded-lg border-none bg-white/80 text-gray-800 placeholder-gray-500 focus:ring-4 focus:ring-indigo-300 focus:outline-none"
-        />
-        <input
-          v-model="category"
-          placeholder="Category"
-          class="px-4 py-3 rounded-lg border-none bg-white/80 text-gray-800 placeholder-gray-500 focus:ring-4 focus:ring-indigo-300 focus:outline-none"
-        />
-        <input
-          v-model.number="amount"
-          type="number"
-          placeholder="Amount ($)"
-          class="px-4 py-3 rounded-lg border-none bg-white/80 text-gray-800 placeholder-gray-500 focus:ring-4 focus:ring-indigo-300 focus:outline-none"
-        />
-        <input
-          v-model="date"
-          type="date"
-          class="px-4 py-3 rounded-lg border-none bg-white/80 text-gray-800 focus:ring-4 focus:ring-indigo-300 focus:outline-none"
-        />
+    <!-- 💸 Page Content -->
+    <div class="relative z-10 p-8 flex flex-col items-center">
+      <!-- Header -->
+      <header class="w-full max-w-6xl mb-10 text-center">
+        <h1 class="text-4xl font-bold text-white tracking-tight mb-2">💸 Expense Dashboard</h1>
+        <p class="text-gray-400 text-sm">Track your spending beautifully</p>
+      </header>
 
-        <div class="md:col-span-2 flex justify-center">
-          <button
-            type="submit"
-            class="w-full md:w-auto px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
-          >
-            ➕ Add Expense
-          </button>
+      <!-- Add Expense -->
+      <section class="w-full max-w-4xl bg-[#1D1F22]/80 border border-[#35383E] rounded-2xl backdrop-blur-xl shadow-lg p-8 mb-8">
+        <h2 class="text-2xl font-semibold mb-6 text-center text-white">Add Expense</h2>
+
+        <form @submit.prevent="addExpense" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+          <div class="flex flex-col">
+            <label class="text-sm mb-1 text-gray-400">Title</label>
+            <input v-model="title" placeholder="e.g. Dinner at ToriYard" class="input-graphite" />
+          </div>
+
+          <div class="flex flex-col">
+            <label class="text-sm mb-1 text-gray-400">Category</label>
+            <input v-model="category" placeholder="Food, Transport..." class="input-graphite" />
+          </div>
+
+          <div class="flex flex-col">
+            <label class="text-sm mb-1 text-gray-400">Amount ($)</label>
+            <input v-model.number="amount" type="number" placeholder="0.00" class="input-graphite" />
+          </div>
+
+          <div class="flex flex-col">
+            <label class="text-sm mb-1 text-gray-400">Date</label>
+            <input v-model="date" type="date" class="input-graphite" />
+          </div>
+
+          <div class="md:col-span-2 flex justify-end">
+            <button type="submit" class="btn-graphite">➕ Add Expense</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Expense List -->
+      <section class="w-full max-w-5xl bg-[#1D1F22]/80 border border-[#35383E] rounded-2xl backdrop-blur-xl shadow-lg p-8 mb-8">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+          <h2 class="text-2xl font-semibold text-white">Your Expenses</h2>
+
+          <select v-model="filter" class="select-graphite mt-4 md:mt-0">
+            <option value="daily">Daily</option>
+            <option value="monthly">Monthly</option>
+            <option value="all">All</option>
+          </select>
         </div>
-      </form>
-    </div>
 
-    <!-- Expense List Section -->
-    <div
-      class="backdrop-blur-md bg-white/20 border border-white/40 shadow-xl rounded-2xl p-8 w-full max-w-5xl mb-10 transition hover:shadow-indigo-400/50"
-    >
-      <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
-        <h2 class="text-2xl font-semibold drop-shadow-md">Your Expenses</h2>
+        <ul v-if="filteredExpenses.length" class="space-y-3">
+          <li
+            v-for="e in filteredExpenses"
+            :key="e.id"
+            class="flex justify-between items-center bg-[#26292E]/80 text-gray-200 rounded-lg px-5 py-4 border border-[#35383E] hover:border-indigo-500 transition-all duration-150"
+          >
+            <div>
+              <h3 class="font-semibold text-gray-100">{{ e.title }}</h3>
+              <p class="text-sm text-gray-500">
+                {{ e.category }} • {{ new Date(e.date).toLocaleDateString() }}
+              </p>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="font-semibold text-indigo-400 text-lg">${{ e.amount.toFixed(2) }}</span>
+              <button
+                @click="deleteExpense(e.id)"
+                class="text-gray-500 hover:text-red-500 transition"
+                title="Delete"
+              >
+                🗑️
+              </button>
+            </div>
+          </li>
+        </ul>
 
-        <select
-          v-model="filter"
-          class="mt-4 md:mt-0 px-4 py-2 rounded-lg bg-white/80 text-gray-800 focus:ring-4 focus:ring-indigo-300 focus:outline-none"
-        >
-          <option value="daily">Daily</option>
-          <option value="monthly">Monthly</option>
-          <option value="all">All</option>
-        </select>
-      </div>
+        <p v-else class="text-center text-gray-500 mt-6">No expenses found for this filter.</p>
+      </section>
 
-      <ul v-if="filteredExpenses.length" class="space-y-3">
-        <li
-          v-for="e in filteredExpenses"
-          :key="e.id"
-          class="flex justify-between items-center bg-white/90 text-gray-800 rounded-lg px-5 py-3 shadow-sm hover:shadow-md transition"
-        >
-          <div>
-            <h3 class="font-semibold text-gray-900">{{ e.title }}</h3>
-            <p class="text-sm text-gray-600">
-              {{ e.category }} • {{ new Date(e.date).toLocaleDateString() }}
-            </p>
-          </div>
-          <div class="flex items-center gap-4">
-            <span class="font-bold text-indigo-700">${{ e.amount.toFixed(2) }}</span>
-            <button
-              @click="deleteExpense(e.id)"
-              class="text-red-500 hover:text-red-700 transition"
-              title="Delete"
-            >
-              🗑️
-            </button>
-          </div>
-        </li>
-      </ul>
+      <!-- Summary Cards -->
+      <section class="grid md:grid-cols-3 gap-6 w-full max-w-5xl mb-10">
+        <div class="card-graphite">
+          <h3 class="text-gray-400 text-sm">🕒 Today</h3>
+          <p class="text-3xl font-bold text-indigo-400">${{ summary.today.toFixed(2) }}</p>
+        </div>
+        <div class="card-graphite">
+          <h3 class="text-gray-400 text-sm">📅 This Month</h3>
+          <p class="text-3xl font-bold text-indigo-400">${{ summary.month.toFixed(2) }}</p>
+        </div>
+        <div class="card-graphite">
+          <h3 class="text-gray-400 text-sm">🌍 Total</h3>
+          <p class="text-3xl font-bold text-indigo-400">${{ summary.total.toFixed(2) }}</p>
+        </div>
+      </section>
 
-      <p v-else class="text-center text-indigo-100 mt-6">
-        No expenses found for this filter.
-      </p>
-    </div>
-
-    <!-- Summary Bar + Chart Section (BOTTOM) -->
-    <div
-      class="backdrop-blur-md bg-white/20 border border-white/40 shadow-xl rounded-2xl p-6 w-full max-w-5xl mb-10 flex flex-col sm:flex-row justify-around items-center text-center gap-6"
-    >
-      <div>
-        <h3 class="text-lg font-semibold">🕒 Today</h3>
-        <p class="text-2xl font-bold text-yellow-200">${{ summary.today.toFixed(2) }}</p>
-      </div>
-      <div>
-        <h3 class="text-lg font-semibold">📅 This Month</h3>
-        <p class="text-2xl font-bold text-yellow-200">${{ summary.month.toFixed(2) }}</p>
-      </div>
-      <div>
-        <h3 class="text-lg font-semibold">🌍 Total</h3>
-        <p class="text-2xl font-bold text-yellow-200">${{ summary.total.toFixed(2) }}</p>
-      </div>
-    </div>
-
-    <div
-      class="backdrop-blur-md bg-white/20 border border-white/40 shadow-xl rounded-2xl p-6 w-full max-w-5xl mb-20 flex flex-col items-center"
-    >
-      <h2 class="text-2xl font-semibold mb-4">Spending by Category</h2>
-      <canvas id="expenseChart" class="max-w-[500px]"></canvas>
+      <!-- Chart -->
+      <section class="w-full max-w-5xl bg-[#1D1F22]/80 border border-[#35383E] rounded-2xl backdrop-blur-xl shadow-lg p-8 text-center">
+        <h2 class="text-2xl font-semibold mb-4 text-white">Spending by Category</h2>
+        <canvas id="expenseChart" class="max-w-[500px] mx-auto"></canvas>
+      </section>
     </div>
   </div>
 </template>
-
 
 <script setup>
 import { ref, computed, onMounted, watch } from "vue"
 import api from "../api"
 import Chart from "chart.js/auto"
+import ParticleBackground from "../components/ParticleBackground.vue"
 
 const expenses = ref([])
 const title = ref("")
@@ -160,7 +150,6 @@ const deleteExpense = async (id) => {
   await fetchExpenses()
 }
 
-// 💰 Summary Calculations
 const updateSummary = () => {
   const now = new Date()
   let todaySum = 0,
@@ -176,7 +165,6 @@ const updateSummary = () => {
   summary.value = { today: todaySum, month: monthSum, total: totalSum }
 }
 
-// 📊 Category Chart
 const updateChart = () => {
   const ctx = document.getElementById("expenseChart")
   if (!ctx) return
@@ -210,11 +198,7 @@ const updateChart = () => {
     data,
     options: {
       plugins: {
-        legend: {
-          labels: {
-            color: "#fff",
-          },
-        },
+        legend: { labels: { color: "#fff" } },
       },
     },
   })
@@ -239,3 +223,18 @@ const filteredExpenses = computed(() => {
 onMounted(fetchExpenses)
 watch(expenses, updateSummary)
 </script>
+
+<style scoped>
+.input-graphite {
+  @apply px-4 py-3 rounded-xl bg-[#26292E] text-gray-200 placeholder-gray-500 border border-[#35383E] focus:ring-2 focus:ring-indigo-500 focus:outline-none;
+}
+.select-graphite {
+  @apply px-4 py-2 rounded-lg bg-[#26292E] text-gray-200 border border-[#35383E] focus:ring-2 focus:ring-indigo-500 focus:outline-none;
+}
+.btn-graphite {
+  @apply px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-md hover:shadow-indigo-500/30 transition-all duration-300;
+}
+.card-graphite {
+  @apply bg-[#1D1F22]/80 border border-[#35383E] rounded-2xl p-6 text-center shadow-md hover:shadow-indigo-500/20 transition-all;
+}
+</style>

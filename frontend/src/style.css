@@ -6,3 +6,17 @@ body {
   font-family: 'Inter', sans-serif;
   background-color: #f9fafb;
 }
+
+/* In style.css */
+body {
+  background-color: #0d0d0d;
+  color: #eaeaea;
+}
+
+button, input, select {
+  transition: all 0.25s ease;
+}
+button:hover, input:focus {
+  transform: scale(1.01);
+}
+
