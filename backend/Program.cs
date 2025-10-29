@@ -1,5 +1,7 @@
 using backend.Data;
 using Microsoft.EntityFrameworkCore;
+using backend.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // ✅ Enable Controllers
@@ -15,7 +17,10 @@ builder.Services.AddSwaggerGen();
 // ✅ Connect SQLite database
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-    
+
+// ✅ AuthService
+builder.Services.AddScoped<AuthService>();
+
 var app = builder.Build();
 
 // ✅ Enable Swagger UI
