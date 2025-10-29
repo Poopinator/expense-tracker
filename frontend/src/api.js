@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'https://localhost:5249', // Or http://localhost:5000 if HTTPS errors occur
+  baseURL: 'http://localhost:5249', // Or http://localhost:5000 if HTTPS errors occur
 })
 
 api.interceptors.request.use(config => {

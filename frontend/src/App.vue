@@ -11,39 +11,41 @@ const logout = () => {
 </script>
 
 <template>
-  <div id="app">
-    <header v-if="!['/login', '/register'].includes(route.path)">
-      <h1>💸 Expense Tracker</h1>
-      <button @click="logout">Logout</button>
+  <div id="app" class="min-h-screen flex flex-col bg-gray-50 text-gray-800">
+    <!-- Navbar -->
+    <header
+      v-if="!['/login', '/register'].includes(route.path)"
+      class="bg-indigo-600 text-white px-6 py-4 flex justify-between items-center shadow-md"
+    >
+      <h1 class="text-xl font-semibold tracking-tight">💸 Expense Tracker</h1>
+      <button
+        @click="logout"
+        class="bg-white text-indigo-600 font-semibold px-4 py-2 rounded-lg shadow hover:bg-indigo-100 transition-all duration-200"
+      >
+        Logout
+      </button>
     </header>
 
-    <main>
+    <!-- Page Content -->
+    <main class="flex-1">
       <RouterView />
     </main>
+
+    <!-- Footer -->
+    <footer
+      v-if="!['/login', '/register'].includes(route.path)"
+      class="text-center text-sm text-gray-500 py-4 border-t border-gray-200"
+    >
+      © {{ new Date().getFullYear() }} Expense Tracker — Built with ❤️
+    </footer>
   </div>
 </template>
 
-<style scoped>
-header {
-  background: #2c3e50;
-  color: white;
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-button {
-  background: #e74c3c;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-button:hover {
-  background: #c0392b;
-}
-main {
-  padding: 2rem;
+<style>
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
 }
 </style>
