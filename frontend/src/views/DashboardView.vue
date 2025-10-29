@@ -31,7 +31,7 @@
 
           <div class="flex flex-col">
             <label class="text-sm mb-1 text-gray-400">Amount ($)</label>
-            <input v-model.number="amount" type="number" placeholder="0.00" class="input-graphite" />
+            <input v-model.number="amount" type="number" placeholder="0.00" class="input-graphite" step="0.01" />
           </div>
 
           <div class="flex flex-col">
