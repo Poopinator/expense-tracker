@@ -1,0 +1,6 @@
+bin/
+obj/
+expense.db
+*.user
+*.swp
+.vscode/
