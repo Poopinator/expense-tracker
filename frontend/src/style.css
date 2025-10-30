@@ -2,21 +2,120 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 🌍 Global Dark Theme */
+html,
 body {
   font-family: 'Inter', sans-serif;
-  background-color: #f9fafb;
-}
-
-/* In style.css */
-body {
   background-color: #0d0d0d;
   color: #eaeaea;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
-button, input, select {
-  transition: all 0.25s ease;
-}
-button:hover, input:focus {
-  transform: scale(1.01);
+/* Vue root always full height */
+#app {
+  min-height: 100vh;
+  position: relative;
+  background-color: #0d0d0d;
 }
 
+/* -------------------------------------------------
+   ✨ Tailwind Particle Background — Galaxy Shimmer
+------------------------------------------------- */
+.particle-bg {
+  inset: 0;
+  z-index: -10 !important;
+  pointer-events: none;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* Layer 1 — bright nearby stars */
+.particle-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(147, 197, 253, 0.6) 2px, transparent 3px),
+    radial-gradient(circle at 50% 80%, rgba(167, 139, 250, 0.6) 2px, transparent 3px),
+    radial-gradient(circle at 85% 35%, rgba(99, 102, 241, 0.7) 2px, transparent 3px),
+    radial-gradient(circle at 25% 65%, rgba(236, 72, 153, 0.6) 2px, transparent 3px);
+  background-size: 160px 160px;
+  opacity: 0.9;
+  animation: stars-float 10s linear infinite alternate;
+  filter: blur(0.5px);
+}
+
+/* Layer 2 — distant dimmer glow */
+.particle-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 30% 75%, rgba(147, 197, 253, 0.25) 1.5px, transparent 2.5px),
+    radial-gradient(circle at 60% 25%, rgba(167, 139, 250, 0.25) 1.5px, transparent 2.5px),
+    radial-gradient(circle at 80% 60%, rgba(59, 130, 246, 0.25) 1.5px, transparent 2.5px),
+    radial-gradient(circle at 10% 45%, rgba(236, 72, 153, 0.25) 1.5px, transparent 2.5px);
+  background-size: 220px 220px;
+  opacity: 0.6;
+  animation: stars-drift 18s linear infinite alternate;
+  filter: blur(1px);
+}
+
+/* Subtle drifting animations */
+@keyframes stars-float {
+  0%   { transform: translateY(0) translateX(0); }
+  100% { transform: translateY(-60px) translateX(30px); }
+}
+@keyframes stars-drift {
+  0%   { transform: translateY(0) translateX(0); }
+  100% { transform: translateY(40px) translateX(-40px); }
+}
+
+
+/* Animations */
+@keyframes float {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  100% {
+    transform: translateY(-60px) rotate(1deg);
+  }
+}
+
+@keyframes drift {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+
+  100% {
+    transform: translateX(40px) translateY(-40px);
+  }
+}
+
+/* Gradient glow behind everything */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -20;
+  background: radial-gradient(ellipse at center, #1a1a1a 0%, #0a0a0a 100%);
+  pointer-events: none;
+}
+
+/* Scrollbar style */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #6366f1, #8b5cf6);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #818cf8, #a78bfa);
+}
