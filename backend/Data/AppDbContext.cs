@@ -14,4 +14,7 @@ namespace backend.Data
         public DbSet<Expense> Expenses => Set<Expense>();
         public DbSet<Budget> Budgets => Set<Budget>();  // ✅ make sure this line is here
     }
+
 }
+
+

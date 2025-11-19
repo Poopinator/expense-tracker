@@ -7,4 +7,11 @@ namespace backend.Models
         public string Category { get; set; } = string.Empty;
         public decimal Limit { get; set; }
     }
+
+    public class BudgetUpdateDto
+{
+    public string Category { get; set; } = string.Empty;
+    public decimal Limit { get; set; }
+}
+
 }

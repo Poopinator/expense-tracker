@@ -88,5 +88,77 @@ namespace backend.Controllers
 
             return Ok(comparison);
         }
+
+        // PUT /api/budget/{id}
+[HttpPut("{id:int}")]
+public async Task<IActionResult> UpdateBudget(int id, [FromBody] BudgetUpdateDto dto)
+{
+    int userId = GetUserId();
+
+    var budget = await _context.Budgets
+        .FirstOrDefaultAsync(b => b.Id == id && b.UserId == userId);
+
+    if (budget == null) return NotFound("Budget not found or not owned by you.");
+
+    // prevent duplicate category per user if the name changes
+    if (!string.Equals(budget.Category, dto.Category, StringComparison.OrdinalIgnoreCase))
+    {
+        bool exists = await _context.Budgets
+            .AnyAsync(b => b.UserId == userId && b.Category == dto.Category);
+        if (exists) return Conflict("You already have a budget for this category.");
+    }
+
+    budget.Category = dto.Category;
+    budget.Limit = dto.Limit;
+
+    await _context.SaveChangesAsync();
+    return Ok(budget);
+}
+
+// DELETE /api/budget/{id}
+[HttpDelete("{id:int}")]
+public async Task<IActionResult> DeleteBudget(int id)
+{
+    int userId = GetUserId();
+
+    var budget = await _context.Budgets
+        .FirstOrDefaultAsync(b => b.Id == id && b.UserId == userId);
+
+    if (budget == null) return NotFound("Budget not found or not owned by you.");
+
+    _context.Budgets.Remove(budget);
+    await _context.SaveChangesAsync();
+    return NoContent();
+}
+
+// Optional: DELETE by category (if your UI uses category as identifier)
+[HttpDelete("by-category/{category}")]
+public async Task<IActionResult> DeleteBudgetByCategory(string category)
+{
+    int userId = GetUserId();
+
+    var budget = await _context.Budgets
+        .FirstOrDefaultAsync(b => b.UserId == userId && b.Category == category);
+
+    if (budget == null) return NotFound("Budget not found for that category.");
+
+    _context.Budgets.Remove(budget);
+    await _context.SaveChangesAsync();
+    return NoContent();
+}
+
+// Optional: GET single budget by id
+[HttpGet("{id:int}")]
+public async Task<IActionResult> GetBudget(int id)
+{
+    int userId = GetUserId();
+    var budget = await _context.Budgets
+        .FirstOrDefaultAsync(b => b.Id == id && b.UserId == userId);
+
+    if (budget == null) return NotFound();
+    return Ok(budget);
+}
+
     }
 }
+
