@@ -5,10 +5,7 @@
     <!-- 🌌 Background Particles -->
     <div class="particle-bg"></div>
 
-    <main
-      class="relative max-w-6xl mx-auto px-6 pt-24 pb-20 flex flex-col items-center text-center"
-    >
-      <!-- ⭐ Continuous Infinite Scrolling Banner with Glow -->
+     <!-- ⭐ Continuous Infinite Scrolling Banner with Glow -->
       <div class="banner-shell mb-14">
         <div class="banner-glow"></div>
         <div class="banner-track">
@@ -34,6 +31,10 @@
           </div>
         </div>
       </div>
+
+    <main
+      class="relative max-w-6xl mx-auto px-6 pt-24 pb-20 flex flex-col items-center text-center"
+    >
 
       <!-- 💸 Hero Section -->
       <section class="w-full flex flex-col items-center">
@@ -282,9 +283,10 @@ const bannerWords = [
 .banner-shell {
   width: 100%;
   overflow: hidden;
-  padding-block: 0.3rem; /* slimmer banner */
-  margin-bottom: 2.5rem; /* more breathing room */
+  padding-block: 0.7rem; /* slimmer banner */
+  margin-bottom: 0rem; /* more breathing room */
   opacity: 0.75; /* cleaner, less heavy */
+  margin-top: 3rem; /* adjust this number to your liking */
 }
 
 .banner-track {
@@ -302,7 +304,7 @@ const bannerWords = [
 }
 
 .banner-item {
-  font-size: 0.9rem;
+  font-size: 1.0rem;
   color: #d2d6f5;
   white-space: nowrap;
   letter-spacing: 0.3px;
