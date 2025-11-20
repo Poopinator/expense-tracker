@@ -460,22 +460,29 @@ const generateNotifications = () => {
 
   for (const b of mergedBudgets.value) {
     if (b.percentage > 100) {
+      const msg = `${b.category} budget exceeded by $${fmtAmt(Math.abs(b.remaining))}!`;
       notifications.value.push({
         type: "danger",
-        message: `${b.category} budget exceeded by $${fmtAmt(Math.abs(b.remaining))}!`,
+        message: msg,
         date: new Date(),
       });
-    } else if (b.percentage > 80) {
+      toast.error(msg + " 🚨");
+    } 
+    
+    else if (b.percentage > 80) {
+      const msg = `${b.category} budget is at ${b.percentage.toFixed(1)}% of its limit.`;
       notifications.value.push({
         type: "warning",
-        message: `${b.category} budget is at ${b.percentage.toFixed(1)}% of its limit.`,
+        message: msg,
         date: new Date(),
       });
+      toast.warning(msg + " ⚠️");
     }
   }
 
   unseenCount.value = notifications.value.length;
 };
+
 
 watch(budgetComparison, () => generateNotifications());
 
@@ -639,6 +646,8 @@ const onAdd = async () => {
     openAddModal.value = false;
 
     await fetchExpenses();
+    await fetchBudgets();   // 👈 auto-refresh budgets after adding an expense
+
   } catch {
     toast.error("Failed to add expense");
   }
