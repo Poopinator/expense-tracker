@@ -10,15 +10,11 @@
       <!-- 🔥 Header -->
       <header class="mb-10 text-center animate-fade-in">
         <div class="inline-flex items-center justify-center mb-3">
-          <span
-            class="text-4xl mr-2 inline-block leading-none"
-            aria-hidden="true"
-          >
+          <span class="text-4xl mr-2 inline-block leading-none" aria-hidden="true">
             📊
           </span>
           <span
-            class="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 text-transparent bg-clip-text"
-          >
+            class="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 text-transparent bg-clip-text">
             Insights &amp; Reports
           </span>
         </div>
@@ -28,15 +24,8 @@
       </header>
 
       <!-- 🔍 Filters & Export -->
-      <section
-        class="flex flex-wrap items-center gap-3 mb-8 justify-center animate-slide-up"
-      >
-        <button
-          v-for="p in presets"
-          :key="p.label"
-          @click="setPreset(p)"
-          :class="presetClass(p.label)"
-        >
+      <section class="flex flex-wrap items-center gap-3 mb-8 justify-center animate-slide-up">
+        <button v-for="p in presets" :key="p.label" @click="setPreset(p)" :class="presetClass(p.label)">
           {{ p.label }}
         </button>
 
@@ -48,14 +37,12 @@
         <div class="flex flex-wrap gap-2 ml-3">
           <button
             class="px-3 py-2 text-xs rounded-lg bg-[#1D1F22] border border-[#35383E] text-gray-300 hover:text-white hover:border-indigo-500 transition"
-            @click="exportCsv"
-          >
+            @click="exportCsv">
             ⬇ Export CSV
           </button>
           <button
             class="px-3 py-2 text-xs rounded-lg bg-[#1D1F22] border border-[#35383E] text-gray-300 hover:text-white hover:border-indigo-500 transition"
-            @click="exportPdf"
-          >
+            @click="exportPdf">
             ⬇ Export PDF
           </button>
         </div>
@@ -70,20 +57,14 @@
       </div>
 
       <!-- ⏳ Skeleton Loader -->
-      <div
-        v-if="loading"
-        class="grid md:grid-cols-3 gap-5 mb-8 animate-pulse"
-      >
+      <div v-if="loading" class="grid md:grid-cols-3 gap-5 mb-8 animate-pulse">
         <div class="skeleton-card"></div>
         <div class="skeleton-card"></div>
         <div class="skeleton-card"></div>
       </div>
 
       <!-- 📌 Primary Insight Cards -->
-      <div
-        v-if="!loading"
-        class="grid md:grid-cols-3 gap-5 mb-6 animate-slide-up"
-      >
+      <div v-if="!loading" class="grid md:grid-cols-3 gap-5 mb-6 animate-slide-up">
         <!-- Total Spent -->
         <div class="card-graphite text-center">
           <h3 class="text-gray-400 text-sm">Total Spent (Current Period)</h3>
@@ -114,28 +95,19 @@
       </div>
 
       <!-- 📈 Advanced Metrics -->
-      <div
-        v-if="!loading && expenses.length"
-        class="grid md:grid-cols-4 gap-5 mb-10 animate-slide-up"
-      >
+      <div v-if="!loading && expenses.length" class="grid md:grid-cols-4 gap-5 mb-10 animate-slide-up">
         <!-- Vs Previous Period -->
         <div class="card-graphite text-center">
           <h3 class="text-gray-400 text-sm">Vs Previous Period</h3>
-          <p
-            class="text-2xl font-bold mt-1"
-            :class="
-              deltaAbs > 0
-                ? 'text-rose-400'
-                : deltaAbs < 0
+          <p class="text-2xl font-bold mt-1" :class="deltaAbs > 0
+              ? 'text-rose-400'
+              : deltaAbs < 0
                 ? 'text-emerald-400'
                 : 'text-gray-300'
-            "
-          >
+            ">
             <span v-if="hasPrevData">
-              {{ deltaAbs > 0 ? "▲" : deltaAbs < 0 ? "▼" : "•" }}
-              {{ deltaPctText }}
-            </span>
-            <span v-else>—</span>
+              {{ deltaAbs > 0 ? "▲" : deltaAbs < 0 ? "▼" : "•" }} {{ deltaPctText }} </span>
+                <span v-else>—</span>
           </p>
           <p class="text-xs text-gray-500 mt-1">
             Prev: ${{ fmt(totalPrevSpent) }}
@@ -170,23 +142,19 @@
           <p class="text-2xl font-bold text-indigo-400 mt-1">
             {{ biggestIncreaseCategory?.name || "—" }}
           </p>
-          <p
-            v-if="biggestIncreaseCategory"
-            class="text-xs text-gray-500 mt-1"
-          >
+          <p v-if="biggestIncreaseCategory" class="text-xs text-gray-500 mt-1">
             +${{ fmt(biggestIncreaseCategory.diff) }} vs prev period
           </p>
         </div>
       </div>
 
-      <!-- 📊 Charts -->
-      <section v-if="expenses.length" class="grid md:grid-cols-2 gap-8">
-        <!-- Trend + Forecast -->
+      <!-- SECTION 2: 📈 Big Trend + Forecast (full width, A1) -->
+      <section v-if="expenses.length" class="mb-10">
         <div class="panel animate-fade-in">
           <h3 class="panel-title">
             Spending Trend &amp; 30-Day Forecast
           </h3>
-          <div class="chart-wrap">
+          <div class="chart-wrap chart-wrap--tall">
             <canvas ref="trendRef"></canvas>
           </div>
           <p class="mt-3 text-xs text-gray-500">
@@ -197,31 +165,83 @@
             Download trend as PNG
           </button>
         </div>
+      </section>
 
+      <!-- SECTION 3: 📊 Category Breakdown + Analytics (bottom row) -->
+      <section v-if="expenses.length" class="grid md:grid-cols-2 gap-8">
         <!-- Donut: Category Breakdown -->
         <div class="panel animate-fade-in">
           <h3 class="panel-title">Category Breakdown</h3>
-          <div class="chart-wrap">
+
+          <!-- Add donut-center class here -->
+          <div class="chart-wrap donut-center">
             <canvas ref="donutRef"></canvas>
           </div>
+
           <button class="export-btn" @click="exportChartPng(donutRef)">
             Download breakdown as PNG
           </button>
         </div>
+
+
+        <!-- Category Analytics Panel (B3 + C1 style) -->
+        <div class="panel animate-fade-in">
+          <h3 class="panel-title flex items-center justify-between">
+            <span>Category Analytics</span>
+            <span v-if="categoryStats.length" class="text-xs text-gray-400">
+              {{ categoryStats.length }} categories
+            </span>
+          </h3>
+
+          <div v-if="!categoryStats.length" class="text-sm text-gray-500 py-4">
+            No category data available for this range.
+          </div>
+
+          <div v-else class="space-y-3">
+            <!-- Quick summary -->
+            <div class="text-xs text-gray-400">
+              <div>
+                Top category:
+                <span class="text-indigo-300 font-medium">
+                  {{ categoryStats[0].name }}
+                </span>
+              </div>
+              <div class="mt-1">
+                Top 3 categories account for
+                <span class="font-medium">
+                  {{ top3Share.toFixed(1) }}%
+                </span>
+                of your spending in this range.
+              </div>
+            </div>
+
+            <!-- Category list -->
+            <ul class="space-y-2 max-h-64 overflow-y-auto custom-scroll">
+              <li v-for="cat in categoryStats" :key="cat.name" class="flex items-center gap-3">
+                <div class="flex-1">
+                  <div class="flex items-center justify-between text-xs mb-1">
+                    <span class="font-medium text-gray-100 truncate">
+                      {{ cat.name }}
+                    </span>
+                    <span class="text-gray-400 whitespace-nowrap">
+                      ${{ fmt(cat.value) }} • {{ cat.pct.toFixed(1) }}%
+                    </span>
+                  </div>
+                  <div class="mt-0.5 h-1.5 rounded-full bg-[#26292E] overflow-hidden">
+                    <div class="h-full rounded-full bg-indigo-500" :style="{ width: Math.max(cat.pct, 4) + '%' }"></div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
       </section>
 
       <!-- 🧠 Advanced Insights Panel -->
-      <section
-        v-if="!loading && expenses.length && smartInsights.length"
-        class="panel mt-10 animate-slide-up"
-      >
+      <section v-if="!loading && expenses.length && smartInsights.length" class="panel mt-10 animate-slide-up">
         <h3 class="panel-title">Advanced Insights</h3>
         <ul class="space-y-2 text-sm text-gray-300">
-          <li
-            v-for="(ins, idx) in smartInsights"
-            :key="idx"
-            class="flex items-start gap-2"
-          >
+          <li v-for="(ins, idx) in smartInsights" :key="idx" class="flex items-start gap-2">
             <span class="text-indigo-400 mt-0.5">•</span>
             <span>{{ ins }}</span>
           </li>
@@ -419,6 +439,32 @@ const biggestIncreaseCategory = computed(() => {
   return best;
 });
 
+// 🔢 Category stats for right-side panel (B3/C1)
+const categoryStats = computed(() => {
+  if (!expenses.value.length) return [];
+  const total = totalSpent.value || 0;
+  const map = {};
+  for (const e of expenses.value) {
+    const cat = e.category || "Uncategorized";
+    map[cat] = (map[cat] || 0) + Number(e.amount || 0);
+  }
+  return Object.entries(map)
+    .map(([name, value]) => ({
+      name,
+      value,
+      pct: total ? (value / total) * 100 : 0,
+    }))
+    .sort((a, b) => b.value - a.value);
+});
+
+const top3Share = computed(() => {
+  if (!categoryStats.value.length || !totalSpent.value) return 0;
+  const top3Total = categoryStats.value
+    .slice(0, 3)
+    .reduce((sum, c) => sum + c.value, 0);
+  return (top3Total / totalSpent.value) * 100;
+});
+
 // ===== HYBRID FORECAST (LINEAR + MOVING AVG) =====
 function buildDailySeries(list) {
   const map = {};
@@ -533,8 +579,7 @@ const seasonalInsights = computed(() => {
       list.push(
         `You tend to spend about ${diffPct.toFixed(
           1
-        )}% more on ${higherWeekend ? "weekends" : "weekdays"} than on ${
-          higherWeekend ? "weekdays" : "weekends"
+        )}% more on ${higherWeekend ? "weekends" : "weekdays"} than on ${higherWeekend ? "weekdays" : "weekends"
         }.`
       );
     }
@@ -975,25 +1020,22 @@ function exportPdf() {
           30-Day Forecast: $${fmt(forecastNext30.value)}
         </p>
 
-        ${
-          trendImg
-            ? `<h2>Spending Trend & 30-Day Forecast</h2><img src="${trendImg}" />`
-            : ""
-        }
-        ${
-          donutImg
-            ? `<h2>Category Breakdown</h2><img src="${donutImg}" />`
-            : ""
-        }
+        ${trendImg
+      ? `<h2>Spending Trend & 30-Day Forecast</h2><img src="${trendImg}" />`
+      : ""
+    }
+        ${donutImg
+      ? `<h2>Category Breakdown</h2><img src="${donutImg}" />`
+      : ""
+    }
 
-        ${
-          smartInsights.value.length
-            ? `<h2>Key Insights</h2>
+        ${smartInsights.value.length
+      ? `<h2>Key Insights</h2>
                <ul>${smartInsights.value
-                 .map((x) => `<li>${safe(x)}</li>`)
-                 .join("")}</ul>`
-            : ""
-        }
+        .map((x) => `<li>${safe(x)}</li>`)
+        .join("")}</ul>`
+      : ""
+    }
 
         <h2>Transactions</h2>
         <table>
@@ -1051,25 +1093,36 @@ const fmt = (n) => Number(n || 0).toFixed(2);
 
 <style scoped>
 /* ---------------------------------------------------
-   🎨 GLOBAL EFFECTS & UTILITIES
+   🎨 GLOBAL ANIMATIONS
 --------------------------------------------------- */
-
-/* Particle background already handled globally */
-
-/* Smooth fade-in */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
 .animate-fade-in {
   animation: fadeIn 0.6s ease-out forwards;
 }
 
-/* Slide-up entrance */
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
 .animate-slide-up {
   animation: slideUp 0.7s ease-out forwards;
 }
@@ -1077,39 +1130,27 @@ const fmt = (n) => Number(n || 0).toFixed(2);
 /* ---------------------------------------------------
    🧰 INPUTS & BUTTONS
 --------------------------------------------------- */
-
 .select-graphite {
-  @apply px-3 py-2 rounded-lg bg-[#26292E]
-         text-gray-200 border border-[#35383E]
-         focus:ring-2 focus:ring-indigo-500 focus:outline-none;
+  @apply px-3 py-2 rounded-lg bg-[#26292E] text-gray-200 border border-[#35383E] focus:ring-2 focus:ring-indigo-500 focus:outline-none;
 }
 
 .btn-graphite {
-  @apply px-5 py-2.5 rounded-lg font-semibold
-         bg-indigo-600 text-white shadow-md
-         hover:bg-indigo-500 hover:shadow-indigo-500/30
-         transition-all duration-200;
+  @apply px-5 py-2.5 rounded-lg font-semibold bg-indigo-600 text-white shadow-md hover:bg-indigo-500 hover:shadow-indigo-500/30 transition-all duration-200;
 }
 
-/* Small export buttons */
 .export-btn {
-  @apply mt-4 text-xs text-gray-400 underline
-         hover:text-indigo-400 transition;
+  @apply mt-4 text-xs text-gray-400 underline hover:text-indigo-400 transition;
 }
 
 /* ---------------------------------------------------
    🧱 CARDS & PANELS
 --------------------------------------------------- */
-
 .card-graphite {
-  @apply p-6 rounded-2xl shadow-lg backdrop-blur-xl
-         bg-[#1D1F22]/80 border border-[#35383E]
-         transition hover:shadow-indigo-500/20;
+  @apply p-6 rounded-2xl shadow-lg backdrop-blur-xl bg-[#1D1F22]/80 border border-[#35383E] transition hover:shadow-indigo-500/20;
 }
 
 .panel {
-  @apply p-6 rounded-2xl shadow-lg backdrop-blur-xl
-         bg-[#1D1F22]/80 border border-[#35383E];
+  @apply p-6 rounded-2xl shadow-lg backdrop-blur-xl bg-[#1D1F22]/80 border border-[#35383E];
 }
 
 .panel-title {
@@ -1117,23 +1158,48 @@ const fmt = (n) => Number(n || 0).toFixed(2);
 }
 
 /* ---------------------------------------------------
-   📊 CHART WRAPPING
+   📊 CHART CONTAINERS
 --------------------------------------------------- */
-
 .chart-wrap {
-  @apply relative w-full h-[330px];
+  @apply relative w-full h-[260px] md:h-[320px];
+}
+
+.chart-wrap--tall {
+  @apply h-[320px] md:h-[380px];
 }
 
 /* ---------------------------------------------------
    ⏳ LOADING SKELETONS
 --------------------------------------------------- */
-
 .skeleton-card {
   @apply h-24 rounded-2xl bg-gray-700/20 border border-gray-700 animate-pulse;
 }
 
 /* ---------------------------------------------------
-   MISC
+   📜 SCROLLABLE LISTS
 --------------------------------------------------- */
-</style>
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #4b5563 transparent;
+}
 
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: #4b5563;
+  border-radius: 9999px;
+}
+
+/* Center ONLY the donut chart */
+.donut-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>
